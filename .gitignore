@@ -1,0 +1,11 @@
+.godot/
+.godot_appdata/
+*.tmp
+*.log
+.venv/
+__pycache__/
+*.pyc
+tools/voicegen/.cache/
+tools/voicegen/.packages/
+tests/artifacts/
+exports/

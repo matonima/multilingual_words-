@@ -1,0 +1,67 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Words: Verify project",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\versioning\\verify.ps1"],
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Git: Status",
+      "type": "shell",
+      "command": "git",
+      "args": ["status", "--short", "--branch"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Git: Configure origin",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\versioning\\configure_git.ps1", "-RemoteUrl", "${input:remoteUrl}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Git: Push current branch",
+      "type": "shell",
+      "command": "git",
+      "args": ["push"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Release: Patch",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\versioning\\release.ps1", "-Level", "patch", "-Message", "${input:releaseMessage}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Release: Minor",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\versioning\\release.ps1", "-Level", "minor", "-Message", "${input:releaseMessage}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Release: Major",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\versioning\\release.ps1", "-Level", "major", "-Message", "${input:releaseMessage}"],
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "remoteUrl",
+      "type": "promptString",
+      "description": "Git remote URL (HTTPS or SSH)"
+    },
+    {
+      "id": "releaseMessage",
+      "type": "promptString",
+      "description": "Short description of this release"
+    }
+  ]
+}
