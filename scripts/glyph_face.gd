@@ -87,11 +87,10 @@ func _draw_mouth(center_x: float, mouth_y: float) -> void:
 	match expression:
 		0, 1:
 			draw_circle(Vector2(center_x, mouth_y), 13.0, Color("#251516"))
-			draw_circle(Vector2(center_x, mouth_y + 2), 9.0, Color("#e95c70"))
+			draw_circle(Vector2(center_x, mouth_y + 2), 9.0, Color("#ff5994"))
 		2:
 			draw_circle(Vector2(center_x, mouth_y), 9.0, Color("#251516"))
 		3:
 			draw_arc(Vector2(center_x, mouth_y + 9), 15.0, PI + 0.2, TAU - 0.2, 20, Color("#211713"), 4.0, true)
 		4:
 			draw_arc(Vector2(center_x, mouth_y - 6), 17.0, 0.15, PI - 0.15, 20, Color("#211713"), 4.0, true)
-

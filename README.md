@@ -53,9 +53,12 @@ Semantic-version, validation, commit, tag, and push tasks are included. See
 
 ## Android and Web exports
 
-Run the **Words: Build Android and Web** editor task, or run
-`tools/build_exports.ps1`. It creates an installable debug APK in
-`exports/android/` and a website-ready build in `exports/web/`. Exported builds
+Run the **Words: Build publishable Android and Web** editor task, or run
+`tools/build_exports.ps1`. It creates a release-signed APK in `exports/android/`,
+an upload-ready website ZIP, and the expanded website in `exports/web/`.
+Private Android signing credentials remain outside the repository in
+`D:\godot\private-keys\multilingualwords`. Back that folder up securely: every
+future Android update must use the same key. Exported builds and credentials
 are intentionally excluded from Git.
 
 ## Verification

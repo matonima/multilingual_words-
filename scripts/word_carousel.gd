@@ -38,8 +38,8 @@ func _build() -> void:
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	style.border_color = Color("#f0d7a5")
-	style.shadow_color = Color("#8c5d3026")
+	style.border_color = Color("#82b6ff")
+	style.shadow_color = Color("#392d4326")
 	style.shadow_size = 12
 	add_theme_stylebox_override("panel", style)
 
@@ -50,13 +50,13 @@ func _build() -> void:
 	title.text = "Word Wheel"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 26)
-	title.add_theme_color_override("font_color", Color("#49372d"))
+	title.add_theme_color_override("font_color", Color("#392d43"))
 	root.add_child(title)
 	var hint := Label.new()
 	hint.text = "Choose a living letter"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", 16)
-	hint.add_theme_color_override("font_color", Color("#78635a"))
+	hint.add_theme_color_override("font_color", Color("#665b70"))
 	root.add_child(hint)
 
 	ring = Control.new()
@@ -68,7 +68,7 @@ func _build() -> void:
 	disc.size = Vector2(250, 250)
 	disc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var disc_style := StyleBoxFlat.new()
-	disc_style.bg_color = Color("#fff8e9")
+	disc_style.bg_color = Color("#edff8f")
 	disc_style.corner_radius_top_left = 140
 	disc_style.corner_radius_top_right = 140
 	disc_style.corner_radius_bottom_left = 140
@@ -77,7 +77,7 @@ func _build() -> void:
 	disc_style.border_width_top = 5
 	disc_style.border_width_right = 5
 	disc_style.border_width_bottom = 5
-	disc_style.border_color = Color("#f4c85a")
+	disc_style.border_color = Color("#ff9668")
 	disc.add_theme_stylebox_override("panel", disc_style)
 	ring.add_child(disc)
 
@@ -88,7 +88,7 @@ func _build() -> void:
 	center_letter.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	center_letter.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	center_letter.add_theme_font_size_override("font_size", 68)
-	center_letter.add_theme_color_override("font_color", Color("#e85d4f"))
+	center_letter.add_theme_color_override("font_color", Color("#ff5994"))
 	ring.add_child(center_letter)
 	word_label = Label.new()
 	word_label.position = Vector2(35, 342)
@@ -97,7 +97,7 @@ func _build() -> void:
 	word_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	word_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	word_label.add_theme_font_size_override("font_size", 22)
-	word_label.add_theme_color_override("font_color", Color("#49372d"))
+	word_label.add_theme_color_override("font_color", Color("#392d43"))
 	ring.add_child(word_label)
 
 	for visible_index in range(VISIBLE_COUNT):
@@ -145,7 +145,7 @@ func _refresh() -> void:
 		button.add_theme_font_override("font", font)
 		button.set_meta("entry_index", data_index)
 		button.position = center + Vector2(cos(angle), sin(angle)) * radius - button.size * 0.5
-		button.modulate = Color.WHITE if data_index == selected_index else Color("#f7d791")
+		button.modulate = Color.WHITE if data_index == selected_index else Color("#82b6ffb8")
 		button.scale = Vector2.ONE * (1.12 if data_index == selected_index else 0.92)
 		button.pivot_offset = button.size * 0.5
 
@@ -164,4 +164,3 @@ func _select(index: int) -> void:
 	_refresh()
 	entry_selected.emit(index)
 	pronunciation_requested.emit(entries[index])
-

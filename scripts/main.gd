@@ -9,10 +9,16 @@ const UI_FONT := preload("res://assets/fonts/NotoSans-Variable.ttf")
 
 enum Page { WELCOME, LANGUAGES, MODES, ALPHABET, WORDS }
 
+const PALETTE_PINK := Color("#ff5994")
+const PALETTE_ORANGE := Color("#ff9668")
+const PALETTE_YELLOW := Color("#edff8f")
+const PALETTE_GREEN := Color("#84ff9f")
+const PALETTE_BLUE := Color("#82b6ff")
+const INK := Color("#392d43")
+const MUTED_INK := Color("#665b70")
 const PALETTE := [
-	Color("#ef6b5b"), Color("#4a9fdd"), Color("#67b96b"),
-	Color("#aa6cc8"), Color("#f29f3d"), Color("#e85d9c"),
-	Color("#37a99a"), Color("#d78342")
+	PALETTE_PINK, PALETTE_ORANGE, PALETTE_YELLOW,
+	PALETTE_GREEN, PALETTE_BLUE
 ]
 
 var current_page := Page.WELCOME
@@ -41,7 +47,7 @@ func _show_welcome() -> void:
 	current_page = Page.WELCOME
 	selected_language = ""
 	_clear_page()
-	_add_background(Color("#fff3d7"))
+	_add_background(PALETTE_PINK.lightened(0.84))
 
 	var title := Label.new()
 	title.text = "Welcome to Words"
@@ -51,7 +57,7 @@ func _show_welcome() -> void:
 	title.offset_bottom = 92
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 52)
-	title.add_theme_color_override("font_color", Color("#49372d"))
+	title.add_theme_color_override("font_color", INK)
 	page_layer.add_child(title)
 	var subtitle := Label.new()
 	subtitle.text = "Touch any living alphabet to begin"
@@ -61,7 +67,7 @@ func _show_welcome() -> void:
 	subtitle.offset_bottom = 130
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", 21)
-	subtitle.add_theme_color_override("font_color", Color("#7b6458"))
+	subtitle.add_theme_color_override("font_color", MUTED_INK)
 	page_layer.add_child(subtitle)
 
 	var wheel = WheelScript.new()
@@ -76,7 +82,7 @@ func _show_welcome() -> void:
 func _show_language_selection() -> void:
 	current_page = Page.LANGUAGES
 	_clear_page()
-	_add_background(Color("#eef8f5"))
+	_add_background(PALETTE_GREEN.lightened(0.80))
 	var root := _page_stack("Choose a language", "Every language has an alphabet carousel and Level 1 words.", true)
 	var grid := GridContainer.new()
 	grid.columns = 2
@@ -112,7 +118,7 @@ func _show_mode_selection() -> void:
 		return
 	current_page = Page.MODES
 	_clear_page()
-	_add_background(Color("#fff4dc"))
+	_add_background(PALETTE_ORANGE.lightened(0.82))
 	var language := ContentData.language(selected_language)
 	var root := _page_stack("%s • %s" % [language["name"], language["english_name"]], "What would you like to explore?", true)
 	root.get_child(0).add_theme_font_override("font", ContentData.font_for(selected_language))
@@ -122,10 +128,10 @@ func _show_mode_selection() -> void:
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 44)
 	root.add_child(row)
-	var alphabet_button := _mode_button("🔤\nAlphabets\nTouch, listen, and spin through every letter", Color("#5b8def"))
+	var alphabet_button := _mode_button("🔤\nAlphabets\nTouch, listen, and spin through every letter", PALETTE_BLUE)
 	alphabet_button.pressed.connect(_show_alphabet_page)
 	row.add_child(alphabet_button)
-	var word_button := _mode_button("✨\nWords\nDrag living letters to build Level 1 words", Color("#67b96b"))
+	var word_button := _mode_button("✨\nWords\nDrag living letters to build Level 1 words", PALETTE_PINK)
 	word_button.pressed.connect(_show_words_page)
 	row.add_child(word_button)
 
@@ -135,7 +141,7 @@ func _show_alphabet_page() -> void:
 	alphabet_entries = ContentData.entries(selected_language, true)
 	alphabet_index = 0
 	_clear_page()
-	_add_background(Color("#edf7fc"))
+	_add_background(PALETTE_BLUE.lightened(0.82))
 	var content := _content_below_header("Alphabet Carousel", _show_mode_selection)
 	var stack := VBoxContainer.new()
 	stack.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -146,7 +152,7 @@ func _show_alphabet_page() -> void:
 	alphabet_info = Label.new()
 	alphabet_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	alphabet_info.add_theme_font_size_override("font_size", 20)
-	alphabet_info.add_theme_color_override("font_color", Color("#6f5a50"))
+	alphabet_info.add_theme_color_override("font_color", MUTED_INK)
 	stack.add_child(alphabet_info)
 	var center_row := HBoxContainer.new()
 	center_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -168,13 +174,13 @@ func _show_alphabet_page() -> void:
 	alphabet_word.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	alphabet_word.add_theme_font_override("font", ContentData.font_for(selected_language))
 	alphabet_word.add_theme_font_size_override("font_size", 30)
-	alphabet_word.add_theme_color_override("font_color", Color("#49372d"))
+	alphabet_word.add_theme_color_override("font_color", INK)
 	stack.add_child(alphabet_word)
 	var hint := Label.new()
 	hint.text = "Tap the big living letter to hear its sound"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", 17)
-	hint.add_theme_color_override("font_color", Color("#78635a"))
+	hint.add_theme_color_override("font_color", MUTED_INK)
 	stack.add_child(hint)
 	var strip := HBoxContainer.new()
 	strip.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -243,7 +249,7 @@ func _show_words_page() -> void:
 	current_page = Page.WORDS
 	var word_entries := ContentData.entries(selected_language, false)
 	_clear_page()
-	_add_background(Color("#fff4dc"))
+	_add_background(PALETTE_YELLOW.lightened(0.72))
 	var content := _content_below_header("Level 1 Words", _show_mode_selection)
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -313,8 +319,8 @@ func _add_background(color: Color) -> void:
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	page_layer.add_child(background)
-	_add_glow(Vector2(-120, 100), Color("#bcebd799"))
-	_add_glow(Vector2(890, -130), Color("#f8d89488"))
+	_add_glow(Vector2(-120, 100), Color("#84ff9f99"))
+	_add_glow(Vector2(890, -130), Color("#ff599488"))
 
 
 func _add_glow(position: Vector2, color: Color) -> void:
@@ -360,7 +366,7 @@ func _page_stack(title_text: String, subtitle_text: String, include_back: bool) 
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 40)
-	title.add_theme_color_override("font_color", Color("#49372d"))
+	title.add_theme_color_override("font_color", INK)
 	header.add_child(title)
 	if include_back:
 		var spacer := Control.new()
@@ -370,7 +376,7 @@ func _page_stack(title_text: String, subtitle_text: String, include_back: bool) 
 	subtitle.text = subtitle_text
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", 19)
-	subtitle.add_theme_color_override("font_color", Color("#78635a"))
+	subtitle.add_theme_color_override("font_color", MUTED_INK)
 	root.add_child(subtitle)
 	return root
 
@@ -396,7 +402,7 @@ func _content_below_header(title_text: String, back_callable: Callable) -> Contr
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 29)
-	title.add_theme_color_override("font_color", Color("#49372d"))
+	title.add_theme_color_override("font_color", INK)
 	row.add_child(title)
 	var home := Button.new()
 	home.text = "⌂  Home"
@@ -445,7 +451,7 @@ func _round_arrow(text: String) -> Button:
 
 func _language_card_style(accent: Color, active: bool) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#ffffff") if not active else accent.lightened(0.80)
+	style.bg_color = accent.lightened(0.88) if not active else accent.lightened(0.70)
 	style.corner_radius_top_left = 30
 	style.corner_radius_top_right = 30
 	style.corner_radius_bottom_left = 30
@@ -455,7 +461,7 @@ func _language_card_style(accent: Color, active: bool) -> StyleBoxFlat:
 	style.border_width_right = 4
 	style.border_width_bottom = 4
 	style.border_color = accent
-	style.shadow_color = Color("#5b3d2830")
+	style.shadow_color = Color("#392d4330")
 	style.shadow_size = 10 if not active else 5
 	style.shadow_offset = Vector2(0, 5)
 	return style
@@ -463,7 +469,7 @@ func _language_card_style(accent: Color, active: bool) -> StyleBoxFlat:
 
 func _header_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#ffffffdc")
+	style.bg_color = Color("#ffffffeb")
 	style.corner_radius_top_left = 24
 	style.corner_radius_top_right = 24
 	style.corner_radius_bottom_left = 24
@@ -472,7 +478,7 @@ func _header_style() -> StyleBoxFlat:
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	style.border_color = Color("#efd6aa")
+	style.border_color = PALETTE_BLUE
 	return style
 
 
@@ -481,7 +487,7 @@ func _make_theme() -> Theme:
 	result.default_font = UI_FONT
 	result.default_font_size = 18
 	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color("#fff2c9")
+	normal.bg_color = PALETTE_YELLOW
 	normal.corner_radius_top_left = 16
 	normal.corner_radius_top_right = 16
 	normal.corner_radius_bottom_left = 16
@@ -490,21 +496,21 @@ func _make_theme() -> Theme:
 	normal.border_width_top = 2
 	normal.border_width_right = 2
 	normal.border_width_bottom = 2
-	normal.border_color = Color("#e0b64d")
-	normal.shadow_color = Color("#6d4b2438")
+	normal.border_color = PALETTE_ORANGE
+	normal.shadow_color = Color("#392d4338")
 	normal.shadow_size = 5
 	normal.shadow_offset = Vector2(0, 3)
 	var hover: StyleBoxFlat = normal.duplicate()
-	hover.bg_color = Color("#ffe39a")
-	hover.border_color = Color("#f09a3e")
+	hover.bg_color = PALETTE_ORANGE.lightened(0.28)
+	hover.border_color = PALETTE_PINK
 	var pressed: StyleBoxFlat = normal.duplicate()
-	pressed.bg_color = Color("#f7c95d")
+	pressed.bg_color = PALETTE_ORANGE
 	pressed.shadow_size = 2
 	result.set_stylebox("normal", "Button", normal)
 	result.set_stylebox("hover", "Button", hover)
 	result.set_stylebox("pressed", "Button", pressed)
 	result.set_stylebox("focus", "Button", StyleBoxEmpty.new())
-	result.set_color("font_color", "Button", Color("#5a4638"))
-	result.set_color("font_hover_color", "Button", Color("#49372d"))
-	result.set_color("font_pressed_color", "Button", Color("#49372d"))
+	result.set_color("font_color", "Button", INK)
+	result.set_color("font_hover_color", "Button", INK)
+	result.set_color("font_pressed_color", "Button", INK)
 	return result

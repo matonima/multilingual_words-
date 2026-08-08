@@ -7,7 +7,7 @@ const SlotScript := preload("res://scripts/word_slot.gd")
 signal audio_requested(path: String, text: String, language_code: String, fallback: String, loop: bool)
 signal audio_stop_requested
 
-const COLORS := ["#ef6b5b", "#4a9fdd", "#67b96b", "#aa6cc8", "#f29f3d", "#e85d9c"]
+const COLORS := ["#ff5994", "#ff9668", "#edff8f", "#84ff9f", "#82b6ff"]
 
 var current_entry: Dictionary = {}
 var activity_id := 0
@@ -56,7 +56,7 @@ func show_entry(entry: Dictionary, entry_id: int) -> void:
 
 func _build() -> void:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#fffdf8ee")
+	style.bg_color = Color("#ffffffeb")
 	style.corner_radius_top_left = 34
 	style.corner_radius_top_right = 34
 	style.corner_radius_bottom_left = 34
@@ -65,8 +65,8 @@ func _build() -> void:
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	style.border_color = Color("#f0d7a5")
-	style.shadow_color = Color("#8c5d3026")
+	style.border_color = Color("#ff9668")
+	style.shadow_color = Color("#392d4326")
 	style.shadow_size = 12
 	add_theme_stylebox_override("panel", style)
 	var root := Control.new()
@@ -80,7 +80,7 @@ func _build() -> void:
 	title_label.offset_bottom = 78
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.add_theme_font_size_override("font_size", 38)
-	title_label.add_theme_color_override("font_color", Color("#49372d"))
+	title_label.add_theme_color_override("font_color", Color("#392d43"))
 	root.add_child(title_label)
 	prompt_label = Label.new()
 	prompt_label.anchor_left = 0.08
@@ -89,7 +89,7 @@ func _build() -> void:
 	prompt_label.offset_bottom = 112
 	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	prompt_label.add_theme_font_size_override("font_size", 17)
-	prompt_label.add_theme_color_override("font_color", Color("#78635a"))
+	prompt_label.add_theme_color_override("font_color", Color("#665b70"))
 	root.add_child(prompt_label)
 
 	var slots_center := CenterContainer.new()
@@ -123,7 +123,7 @@ func _build() -> void:
 	result_card.anchor_right = 0.80
 	result_card.anchor_bottom = 0.94
 	var result_style := StyleBoxFlat.new()
-	result_style.bg_color = Color("#e7f7d9")
+	result_style.bg_color = Color("#edff8f")
 	result_style.corner_radius_top_left = 26
 	result_style.corner_radius_top_right = 26
 	result_style.corner_radius_bottom_left = 26
@@ -132,7 +132,7 @@ func _build() -> void:
 	result_style.border_width_top = 3
 	result_style.border_width_right = 3
 	result_style.border_width_bottom = 3
-	result_style.border_color = Color("#77b85b")
+	result_style.border_color = Color("#84ff9f")
 	result_card.add_theme_stylebox_override("panel", result_style)
 	root.add_child(result_card)
 	var result_stack := VBoxContainer.new()
@@ -146,7 +146,7 @@ func _build() -> void:
 	result_word.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	result_word.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	result_word.add_theme_font_size_override("font_size", 24)
-	result_word.add_theme_color_override("font_color", Color("#37682e"))
+	result_word.add_theme_color_override("font_color", Color("#392d43"))
 	result_stack.add_child(result_word)
 	replay_button = Button.new()
 	replay_button.text = "🔊  Hear pronunciation again"
