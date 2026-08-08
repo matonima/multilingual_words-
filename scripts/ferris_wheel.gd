@@ -10,7 +10,7 @@ const CABINS := [
 	["ش", "ar"], ["Я", "ru"], ["क", "sa"], ["V", "la"],
 	["م", "ar"], ["Ж", "ru"], ["स", "sa"], ["Q", "la"]
 ]
-const COLORS := ["#ff5994", "#ff9668", "#edff8f", "#84ff9f", "#82b6ff"]
+const COLORS := ["#fe005d", "#00b1c1", "#fddf03", "#00d39e", "#0184ba", "#ff5994", "#ff9668", "#82b6ff"]
 
 var cabins: Array[Control] = []
 var wheel_angle := 0.0
@@ -52,16 +52,16 @@ func _layout_cabins() -> void:
 func _draw() -> void:
 	var center := Vector2(size.x * 0.5, size.y * 0.49)
 	var radius := minf(size.x, size.y) * 0.36
-	draw_circle(center, radius + 8.0, Color("#ff9668"))
-	draw_circle(center, radius, Color("#edff8f"))
-	draw_arc(center, radius, 0.0, TAU, 96, Color("#ff5994"), 7.0, true)
+	draw_circle(center, radius + 8.0, Color("#00b1c1"))
+	draw_circle(center, radius, Color("#fddf03"))
+	draw_arc(center, radius, 0.0, TAU, 96, Color("#fe005d"), 7.0, true)
 	for index in range(CABINS.size()):
 		var angle := wheel_angle + TAU * float(index) / float(CABINS.size()) - PI * 0.5
 		var end := center + Vector2(cos(angle), sin(angle)) * radius
-		draw_line(center, end, Color("#82b6ffcc"), 3.0, true)
-	draw_circle(center, 23.0, Color("#ff5994"))
-	draw_line(center + Vector2(-28, 22), center + Vector2(-105, radius + 70), Color("#392d43"), 13.0, true)
-	draw_line(center + Vector2(28, 22), center + Vector2(105, radius + 70), Color("#392d43"), 13.0, true)
+		draw_line(center, end, Color("#0184bacc"), 3.0, true)
+	draw_circle(center, 23.0, Color("#fe005d"))
+	draw_line(center + Vector2(-28, 22), center + Vector2(-105, radius + 70), Color("#26384a"), 13.0, true)
+	draw_line(center + Vector2(28, 22), center + Vector2(105, radius + 70), Color("#26384a"), 13.0, true)
 
 
 func _on_glyph_pressed() -> void:

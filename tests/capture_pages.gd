@@ -20,6 +20,7 @@ func _run() -> void:
 	scene.call("_show_language_selection")
 	await _capture("languages")
 	scene.call("_choose_language", "ar")
+	await _capture("arabic_modes")
 	scene.call("_show_alphabet_page")
 	await _capture("arabic_alphabet")
 	scene.call("_show_words_page")

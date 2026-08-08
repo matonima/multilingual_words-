@@ -31,13 +31,25 @@ VOICES = {
     "la": "it-IT-IsabellaNeural",
 }
 
-# Word prompts follow the educator-supplied syllable guides for languages
-# without a dedicated neural voice. This avoids Hindi schwa deletion in
-# Sanskrit and modern Italian consonants in reconstructed Classical Latin.
+# Latin has no dedicated neural voice. A British English voice reads carefully
+# normalized, continuous prompts so uppercase hints such as "AH" are never
+# mistaken for individually spelled letters.
 GUIDE_VOICES = {
-    "sa": "en-IN-NeerjaNeural",
     "la": "en-GB-SoniaNeural",
 }
+
+# Dictionary-audited speech prompts are deliberately separate from the
+# child-facing "say it like" labels. Keep these lowercase and word-like: Edge
+# voices can spell an all-caps syllable (for example, AH -> A H). Aqua follows
+# the requested common English pronunciation; the remaining items preserve the
+# beginner Classical-style guides without artificial gaps between syllables.
+LATIN_WORD_PROMPTS = [
+    "aqua", "boh-noos", "kah-nis", "doh-moos", "eh-go", "fee-lee-oos",
+    "gal-lee-na", "hoh-mo", "in-soo-la", "ka-len-dye", "loo-na",
+    "mah-ter", "noh-men", "oh-koo-loos", "pah-ter", "kwat-too-or",
+    "roh-sa", "sohl", "ter-ra", "wee-ta", "ksoos-toos", "oop-see-lon",
+    "zoh-na",
+]
 
 RUSSIAN_LETTER_NAMES = [
     "а", "бэ", "вэ", "гэ", "дэ", "е", "ё", "жэ", "зэ", "и",
@@ -104,6 +116,18 @@ def letter_text(code: str, index: int, entry: dict) -> str:
     return str(entry["letter"])
 
 
+def word_text(code: str, index: int, entry: dict) -> tuple[str, str]:
+    word = str(entry["word"])
+    if code == "sa":
+        # A native Indic voice reading Devanagari handles Sanskrit clusters
+        # such as ग्न in अग्नि. The previous English "ag nee" prompt could
+        # insert a /dʒ/ sound and produce "ajinee".
+        return word, VOICES["sa"]
+    if code == "la":
+        return LATIN_WORD_PROMPTS[index], GUIDE_VOICES["la"]
+    return word, VOICES[code]
+
+
 async def render_one(text: str, voice: str, destination: Path, semaphore: asyncio.Semaphore) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     async with semaphore:
@@ -147,8 +171,7 @@ async def generate(overwrite: bool, only_language: str | None) -> None:
             if word:
                 word_path = PROJECT / "assets" / "audio" / "words" / code / f"{ordinal:02d}.mp3"
                 if overwrite or not word_path.exists() or word_path.stat().st_size < 500:
-                    word_voice = GUIDE_VOICES.get(code, voice)
-                    spoken_word = str(entry.get("say", word)).replace("-", " ") if code in GUIDE_VOICES else word
+                    spoken_word, word_voice = word_text(code, ordinal - 1, entry)
                     jobs.append(render_one(spoken_word, word_voice, word_path, semaphore))
 
     # Sanskrit spelling exposes vowel signs as their own draggable pieces. Give

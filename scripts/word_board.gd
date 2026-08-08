@@ -7,7 +7,7 @@ const SlotScript := preload("res://scripts/word_slot.gd")
 signal audio_requested(path: String, text: String, language_code: String, fallback: String, loop: bool)
 signal audio_stop_requested
 
-const COLORS := ["#ff5994", "#ff9668", "#edff8f", "#84ff9f", "#82b6ff"]
+const COLORS := ["#fe005d", "#00b1c1", "#fddf03", "#00d39e", "#0184ba", "#ff5994", "#ff9668", "#82b6ff"]
 
 var current_entry: Dictionary = {}
 var activity_id := 0
@@ -65,8 +65,8 @@ func _build() -> void:
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	style.border_color = Color("#ff9668")
-	style.shadow_color = Color("#392d4326")
+	style.border_color = Color("#00b1c1")
+	style.shadow_color = Color("#26384a26")
 	style.shadow_size = 12
 	add_theme_stylebox_override("panel", style)
 	var root := Control.new()
@@ -123,7 +123,7 @@ func _build() -> void:
 	result_card.anchor_right = 0.80
 	result_card.anchor_bottom = 0.94
 	var result_style := StyleBoxFlat.new()
-	result_style.bg_color = Color("#edff8f")
+	result_style.bg_color = Color("#fdf6bd")
 	result_style.corner_radius_top_left = 26
 	result_style.corner_radius_top_right = 26
 	result_style.corner_radius_bottom_left = 26
@@ -132,7 +132,7 @@ func _build() -> void:
 	result_style.border_width_top = 3
 	result_style.border_width_right = 3
 	result_style.border_width_bottom = 3
-	result_style.border_color = Color("#84ff9f")
+	result_style.border_color = Color("#00d39e")
 	result_card.add_theme_stylebox_override("panel", result_style)
 	root.add_child(result_card)
 	var result_stack := VBoxContainer.new()

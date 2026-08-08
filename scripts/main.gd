@@ -5,6 +5,7 @@ const GlyphScript := preload("res://scripts/living_glyph.gd")
 const CarouselScript := preload("res://scripts/word_carousel.gd")
 const BoardScript := preload("res://scripts/word_board.gd")
 const AudioScript := preload("res://scripts/audio_service.gd")
+const CardArtScript := preload("res://scripts/card_art.gd")
 const UI_FONT := preload("res://assets/fonts/NotoSans-Variable.ttf")
 
 enum Page { WELCOME, LANGUAGES, MODES, ALPHABET, WORDS }
@@ -14,11 +15,16 @@ const PALETTE_ORANGE := Color("#ff9668")
 const PALETTE_YELLOW := Color("#edff8f")
 const PALETTE_GREEN := Color("#84ff9f")
 const PALETTE_BLUE := Color("#82b6ff")
-const INK := Color("#392d43")
-const MUTED_INK := Color("#665b70")
+const OCEAN := Color("#00b1c1")
+const DEEP_OCEAN := Color("#0184ba")
+const MINT := Color("#00d39e")
+const SUN := Color("#fddf03")
+const HOT_PINK := Color("#fe005d")
+const INK := Color("#26384a")
+const MUTED_INK := Color("#587080")
 const PALETTE := [
 	PALETTE_PINK, PALETTE_ORANGE, PALETTE_YELLOW,
-	PALETTE_GREEN, PALETTE_BLUE
+	PALETTE_GREEN, PALETTE_BLUE, OCEAN, DEEP_OCEAN, MINT, SUN, HOT_PINK
 ]
 
 var current_page := Page.WELCOME
@@ -47,7 +53,7 @@ func _show_welcome() -> void:
 	current_page = Page.WELCOME
 	selected_language = ""
 	_clear_page()
-	_add_background(PALETTE_PINK.lightened(0.84))
+	_add_background(HOT_PINK.lightened(0.92))
 
 	var title := Label.new()
 	title.text = "Welcome to Words"
@@ -82,8 +88,8 @@ func _show_welcome() -> void:
 func _show_language_selection() -> void:
 	current_page = Page.LANGUAGES
 	_clear_page()
-	_add_background(PALETTE_GREEN.lightened(0.80))
-	var root := _page_stack("Choose a language", "Every language has an alphabet carousel and Level 1 words.", true)
+	_add_background(OCEAN.lightened(0.91))
+	var root := _page_stack("Choose a language", "Four worlds of letters, sounds, and first words", true)
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -93,16 +99,7 @@ func _show_language_selection() -> void:
 	root.add_child(grid)
 	for code in ["ar", "ru", "sa", "la"]:
 		var data := ContentData.language(code)
-		var card := Button.new()
-		card.text = "%s\n%s\n%s" % [data["name"], data["english_name"], data["sample"]]
-		card.custom_minimum_size = Vector2(440, 210)
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		card.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		card.add_theme_font_override("font", ContentData.font_for(code))
-		card.add_theme_font_size_override("font_size", 30)
-		card.add_theme_stylebox_override("normal", _language_card_style(Color(data["accent"]), false))
-		card.add_theme_stylebox_override("hover", _language_card_style(Color(data["accent"]), true))
-		card.add_theme_stylebox_override("pressed", _language_card_style(Color(data["accent"]).darkened(0.08), true))
+		var card := _language_card(code, data)
 		card.pressed.connect(_choose_language.bind(code))
 		grid.add_child(card)
 
@@ -118,9 +115,9 @@ func _show_mode_selection() -> void:
 		return
 	current_page = Page.MODES
 	_clear_page()
-	_add_background(PALETTE_ORANGE.lightened(0.82))
+	_add_background(DEEP_OCEAN.lightened(0.91))
 	var language := ContentData.language(selected_language)
-	var root := _page_stack("%s • %s" % [language["name"], language["english_name"]], "What would you like to explore?", true)
+	var root := _page_stack("%s • %s" % [language["name"], language["english_name"]], "Choose a picture to start", true)
 	root.get_child(0).add_theme_font_override("font", ContentData.font_for(selected_language))
 	var row := HBoxContainer.new()
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -128,10 +125,10 @@ func _show_mode_selection() -> void:
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 44)
 	root.add_child(row)
-	var alphabet_button := _mode_button("🔤\nAlphabets\nTouch, listen, and spin through every letter", PALETTE_BLUE)
+	var alphabet_button := _mode_button("alphabet", DEEP_OCEAN)
 	alphabet_button.pressed.connect(_show_alphabet_page)
 	row.add_child(alphabet_button)
-	var word_button := _mode_button("✨\nWords\nDrag living letters to build Level 1 words", PALETTE_PINK)
+	var word_button := _mode_button("words", HOT_PINK)
 	word_button.pressed.connect(_show_words_page)
 	row.add_child(word_button)
 
@@ -141,7 +138,7 @@ func _show_alphabet_page() -> void:
 	alphabet_entries = ContentData.entries(selected_language, true)
 	alphabet_index = 0
 	_clear_page()
-	_add_background(PALETTE_BLUE.lightened(0.82))
+	_add_background(DEEP_OCEAN.lightened(0.91))
 	var content := _content_below_header("Alphabet Carousel", _show_mode_selection)
 	var stack := VBoxContainer.new()
 	stack.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -249,7 +246,7 @@ func _show_words_page() -> void:
 	current_page = Page.WORDS
 	var word_entries := ContentData.entries(selected_language, false)
 	_clear_page()
-	_add_background(PALETTE_YELLOW.lightened(0.72))
+	_add_background(SUN.lightened(0.86))
 	var content := _content_below_header("Level 1 Words", _show_mode_selection)
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -319,8 +316,8 @@ func _add_background(color: Color) -> void:
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	page_layer.add_child(background)
-	_add_glow(Vector2(-120, 100), Color("#84ff9f99"))
-	_add_glow(Vector2(890, -130), Color("#ff599488"))
+	_add_glow(Vector2(-120, 100), Color("#00d39e88"))
+	_add_glow(Vector2(890, -130), Color("#fe005d77"))
 
 
 func _add_glow(position: Vector2, color: Color) -> void:
@@ -430,15 +427,161 @@ func _go_back() -> void:
 			_show_welcome()
 
 
-func _mode_button(text: String, accent: Color) -> Button:
+func _language_card(code: String, data: Dictionary) -> Button:
+	var accent := Color(data["accent"])
 	var button := Button.new()
-	button.text = text
+	button.text = ""
+	button.clip_contents = true
+	button.custom_minimum_size = Vector2(440, 218)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	button.add_theme_stylebox_override("normal", _language_card_style(accent, false))
+	button.add_theme_stylebox_override("hover", _language_card_style(accent, true))
+	button.add_theme_stylebox_override("pressed", _language_card_style(accent.darkened(0.06), true))
+
+	var art = CardArtScript.new()
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	art.setup(accent, "language")
+	button.add_child(art)
+
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 28)
+	margin.add_theme_constant_override("margin_top", 18)
+	margin.add_theme_constant_override("margin_right", 28)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(margin)
+	var stack := VBoxContainer.new()
+	stack.alignment = BoxContainer.ALIGNMENT_CENTER
+	stack.add_theme_constant_override("separation", 2)
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_child(stack)
+
+	var english := Label.new()
+	english.text = str(data["english_name"]).to_upper()
+	english.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	english.add_theme_font_size_override("font_size", 17)
+	english.add_theme_color_override("font_color", INK)
+	english.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(english)
+	var native := Label.new()
+	native.text = str(data["name"])
+	native.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	native.add_theme_font_override("font", ContentData.font_for(code))
+	native.add_theme_font_size_override("font_size", 33)
+	native.add_theme_color_override("font_color", INK)
+	native.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(native)
+	var sample := Label.new()
+	sample.text = str(data["sample"])
+	sample.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sample.add_theme_font_override("font", ContentData.font_for(code))
+	sample.add_theme_font_size_override("font_size", 39)
+	sample.add_theme_color_override("font_color", accent.darkened(0.24))
+	sample.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(sample)
+	var count := Label.new()
+	count.text = "%d letters  •  Alphabet + Words" % ContentData.entries(code, true).size()
+	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	count.add_theme_font_size_override("font_size", 15)
+	count.add_theme_color_override("font_color", MUTED_INK)
+	count.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(count)
+	return button
+
+
+func _mode_button(kind: String, accent: Color) -> Button:
+	var button := Button.new()
+	button.text = ""
+	button.clip_contents = true
 	button.custom_minimum_size = Vector2(430, 420)
-	button.add_theme_font_size_override("font_size", 25)
 	button.add_theme_stylebox_override("normal", _language_card_style(accent, false))
 	button.add_theme_stylebox_override("hover", _language_card_style(accent, true))
 	button.add_theme_stylebox_override("pressed", _language_card_style(accent.darkened(0.08), true))
+	var art = CardArtScript.new()
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	art.setup(accent, kind)
+	button.add_child(art)
+	_add_activity_preview(button, kind, accent)
 	return button
+
+
+func _add_activity_preview(button: Button, kind: String, accent: Color) -> void:
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 28)
+	margin.add_theme_constant_override("margin_top", 30)
+	margin.add_theme_constant_override("margin_right", 28)
+	margin.add_theme_constant_override("margin_bottom", 28)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(margin)
+	var stack := VBoxContainer.new()
+	stack.alignment = BoxContainer.ALIGNMENT_CENTER
+	stack.add_theme_constant_override("separation", 12)
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_child(stack)
+	var preview := HBoxContainer.new()
+	preview.custom_minimum_size.y = 225
+	preview.alignment = BoxContainer.ALIGNMENT_CENTER
+	preview.add_theme_constant_override("separation", 9)
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(preview)
+	var entries := ContentData.entries(selected_language, false)
+	var symbols: Array[String] = []
+	if kind == "alphabet":
+		var alphabet := ContentData.entries(selected_language, true)
+		for index in range(mini(3, alphabet.size())):
+			symbols.append(str(alphabet[index]["letter"]))
+	else:
+		if not entries.is_empty():
+			var built := ContentData.build_pieces(str(entries[0]["word"]), selected_language)
+			for index in range(mini(4, built.size())):
+				symbols.append(str(built[index]))
+	for index in range(symbols.size()):
+		if kind == "alphabet":
+			var glyph = GlyphScript.new()
+			glyph.setup(symbols[index], PALETTE[(index + 5) % PALETTE.size()], ContentData.font_for(selected_language), index + 10, 76)
+			glyph.custom_minimum_size = Vector2(112, 145)
+			glyph.enabled = false
+			glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			preview.add_child(glyph)
+		else:
+			var tile := PanelContainer.new()
+			tile.custom_minimum_size = Vector2(82, 92)
+			tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			var tile_style := StyleBoxFlat.new()
+			tile_style.bg_color = PALETTE[(index + 5) % PALETTE.size()].lightened(0.58)
+			tile_style.border_color = accent
+			tile_style.set_border_width_all(4)
+			tile_style.set_corner_radius_all(20)
+			tile_style.shadow_color = Color("#26384a33")
+			tile_style.shadow_size = 5
+			tile.add_theme_stylebox_override("panel", tile_style)
+			var letter := Label.new()
+			letter.text = symbols[index]
+			letter.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			letter.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			letter.add_theme_font_override("font", ContentData.font_for(selected_language))
+			letter.add_theme_font_size_override("font_size", 46 if symbols[index].length() <= 2 else 36)
+			letter.add_theme_color_override("font_color", INK)
+			letter.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			tile.add_child(letter)
+			preview.add_child(tile)
+	var title := Label.new()
+	title.text = "ALPHABET" if kind == "alphabet" else "WORDS"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_color_override("font_color", INK)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(title)
+	var cue := Label.new()
+	cue.text = "Meet each letter" if kind == "alphabet" else "Build the whole word"
+	cue.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cue.add_theme_font_size_override("font_size", 18)
+	cue.add_theme_color_override("font_color", MUTED_INK)
+	cue.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(cue)
 
 
 func _round_arrow(text: String) -> Button:
@@ -451,19 +594,19 @@ func _round_arrow(text: String) -> Button:
 
 func _language_card_style(accent: Color, active: bool) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = accent.lightened(0.88) if not active else accent.lightened(0.70)
+	style.bg_color = Color.WHITE if not active else accent.lightened(0.78)
 	style.corner_radius_top_left = 30
 	style.corner_radius_top_right = 30
 	style.corner_radius_bottom_left = 30
 	style.corner_radius_bottom_right = 30
-	style.border_width_left = 4
-	style.border_width_top = 4
-	style.border_width_right = 4
-	style.border_width_bottom = 4
+	style.border_width_left = 6
+	style.border_width_top = 6
+	style.border_width_right = 6
+	style.border_width_bottom = 6
 	style.border_color = accent
-	style.shadow_color = Color("#392d4330")
-	style.shadow_size = 10 if not active else 5
-	style.shadow_offset = Vector2(0, 5)
+	style.shadow_color = Color(accent.r, accent.g, accent.b, 0.34)
+	style.shadow_size = 14 if not active else 7
+	style.shadow_offset = Vector2(0, 7)
 	return style
 
 
@@ -478,7 +621,7 @@ func _header_style() -> StyleBoxFlat:
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	style.border_color = PALETTE_BLUE
+	style.border_color = OCEAN
 	return style
 
 
@@ -487,7 +630,7 @@ func _make_theme() -> Theme:
 	result.default_font = UI_FONT
 	result.default_font_size = 18
 	var normal := StyleBoxFlat.new()
-	normal.bg_color = PALETTE_YELLOW
+	normal.bg_color = SUN
 	normal.corner_radius_top_left = 16
 	normal.corner_radius_top_right = 16
 	normal.corner_radius_bottom_left = 16
@@ -496,15 +639,15 @@ func _make_theme() -> Theme:
 	normal.border_width_top = 2
 	normal.border_width_right = 2
 	normal.border_width_bottom = 2
-	normal.border_color = PALETTE_ORANGE
-	normal.shadow_color = Color("#392d4338")
+	normal.border_color = OCEAN
+	normal.shadow_color = Color("#26384a38")
 	normal.shadow_size = 5
 	normal.shadow_offset = Vector2(0, 3)
 	var hover: StyleBoxFlat = normal.duplicate()
-	hover.bg_color = PALETTE_ORANGE.lightened(0.28)
-	hover.border_color = PALETTE_PINK
+	hover.bg_color = MINT.lightened(0.55)
+	hover.border_color = DEEP_OCEAN
 	var pressed: StyleBoxFlat = normal.duplicate()
-	pressed.bg_color = PALETTE_ORANGE
+	pressed.bg_color = MINT
 	pressed.shadow_size = 2
 	result.set_stylebox("normal", "Button", normal)
 	result.set_stylebox("hover", "Button", hover)

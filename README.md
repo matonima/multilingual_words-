@@ -35,10 +35,11 @@ The app bundles 281 natural neural-voice MP3s and therefore works offline:
 
 - Arabic: native Arabic voice
 - Russian: native Russian voice
-- Sanskrit letters: natural Hindi Devanagari voice; words follow the supplied
-  syllable guides with an Indian English neural voice to preserve final vowels
-- Latin words: a British neural voice reads the supplied Classical-style
-  syllable guides instead of applying modern Italian pronunciation
+- Sanskrit letters and words: natural Indic voice reading Devanagari, preserving
+  conjuncts such as `ग्न` in `अग्नि`
+- Latin words: a British neural voice reads lowercase, continuous prompts so
+  pronunciation hints are never mistaken for individually spelled letters;
+  `aqua` follows its common English dictionary pronunciation
 
 If a bundled clip is absent, the app follows the Numbers app pattern and tries
 a matching installed system voice, then the supplied phonetic spelling. See

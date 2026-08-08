@@ -1,11 +1,12 @@
 # Natural voice generation
 
 `generate_voices.py` creates the bundled MP3 pronunciation library used by the
-Godot app. Arabic and Russian use native neural voices. Sanskrit letters use a
-natural Hindi Devanagari voice, while Sanskrit words use the educator-supplied
-syllable guides with an Indian English voice to avoid Hindi schwa deletion.
-Latin words likewise use the supplied Classical-style syllable guides rather
-than modern Italian spelling rules.
+Godot app. Arabic and Russian use native neural voices. Sanskrit letters and
+words use a natural Indic Devanagari voice so conjuncts such as ग्न remain
+intact. Latin words use lowercase, continuous pronunciation prompts with a
+British neural voice; this prevents guide syllables such as `AH` from being
+spelled as separate letters. The `aqua` clip follows its common English
+dictionary pronunciation as requested.
 
 Run the manifest export after changing content, then regenerate missing clips:
 

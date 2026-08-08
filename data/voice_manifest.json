@@ -6,7 +6,7 @@
         "english_name": "Arabic",
         "locale": "ar-SA",
         "font": "res://assets/fonts/NotoSansArabic-Variable.ttf",
-        "accent": "#ef6b5b",
+        "accent": "#fe005d",
         "sample": "ا ب ت ث",
         "rtl": true
       },
@@ -327,7 +327,7 @@
         "english_name": "Russian",
         "locale": "ru-RU",
         "font": "res://assets/fonts/NotoSans-Variable.ttf",
-        "accent": "#5b8def",
+        "accent": "#0184ba",
         "sample": "А Б В Г",
         "rtl": false
       },
@@ -703,7 +703,7 @@
         "english_name": "Sanskrit",
         "locale": "hi-IN",
         "font": "res://assets/fonts/NotoSansDevanagari-Variable.ttf",
-        "accent": "#e69636",
+        "accent": "#fddf03",
         "sample": "अ आ इ ई",
         "rtl": false
       },
@@ -1233,7 +1233,7 @@
         "english_name": "Latin",
         "locale": "it-IT",
         "font": "res://assets/fonts/NotoSans-Variable.ttf",
-        "accent": "#65aa70",
+        "accent": "#00d39e",
         "sample": "A B C D",
         "rtl": false
       },
@@ -1242,7 +1242,7 @@
           "index": 0,
           "letter": "A",
           "word": "aqua",
-          "say": "AH-kwa",
+          "say": "AK-wuh",
           "english": "water",
           "emoji": "💧",
           "language": "la",

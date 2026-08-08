@@ -6,22 +6,22 @@ const LANGUAGES := {
 	"ar": {
 		"name": "العربية", "english_name": "Arabic", "locale": "ar-SA",
 		"font": "res://assets/fonts/NotoSansArabic-Variable.ttf",
-		"accent": "#ff5994", "sample": "ا ب ت ث", "rtl": true
+		"accent": "#fe005d", "sample": "ا ب ت ث", "rtl": true
 	},
 	"ru": {
 		"name": "Русский", "english_name": "Russian", "locale": "ru-RU",
 		"font": "res://assets/fonts/NotoSans-Variable.ttf",
-		"accent": "#82b6ff", "sample": "А Б В Г", "rtl": false
+		"accent": "#0184ba", "sample": "А Б В Г", "rtl": false
 	},
 	"sa": {
 		"name": "संस्कृतम्", "english_name": "Sanskrit", "locale": "hi-IN",
 		"font": "res://assets/fonts/NotoSansDevanagari-Variable.ttf",
-		"accent": "#ff9668", "sample": "अ आ इ ई", "rtl": false
+		"accent": "#fddf03", "sample": "अ आ इ ई", "rtl": false
 	},
 	"la": {
 		"name": "Latina", "english_name": "Latin", "locale": "it-IT",
 		"font": "res://assets/fonts/NotoSans-Variable.ttf",
-		"accent": "#84ff9f", "sample": "A B C D", "rtl": false
+		"accent": "#00d39e", "sample": "A B C D", "rtl": false
 	}
 }
 
@@ -143,7 +143,7 @@ const SANSKRIT := [
 ]
 
 const LATIN := [
-	["A", "aqua", "AH-kwa", "water", "💧"],
+	["A", "aqua", "AK-wuh", "water", "💧"],
 	["B", "bonus", "BOH-noos", "good", "👍"],
 	["C", "canis", "KA-nis", "dog", "🐕"],
 	["D", "domus", "DOH-moos", "house", "🏠"],
