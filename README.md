@@ -51,6 +51,13 @@ reconstructed Classical Latin.
 Semantic-version, validation, commit, tag, and push tasks are included. See
 `VERSIONING.md` for the one-time Git remote setup and normal release workflow.
 
+## Android and Web exports
+
+Run the **Words: Build Android and Web** editor task, or run
+`tools/build_exports.ps1`. It creates an installable debug APK in
+`exports/android/` and a website-ready build in `exports/web/`. Exported builds
+are intentionally excluded from Git.
+
 ## Verification
 
 ```powershell
