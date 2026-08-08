@@ -75,17 +75,43 @@ func _run() -> void:
 		return
 	print("AUDIO TEST held living letter loops until release/drop")
 
-	# Completing every slot must replace the loop with the one-shot word clip.
+	# Accepting an Arabic RTL drop must not let drag-end accept that tile again.
+	board.place_piece(first_tile.target_index, first_tile)
+	board.place_piece(first_tile.target_index, first_tile)
+	if board.placed_count != 1 or not board.placed[first_tile.target_index]:
+		push_error("AUDIO TEST: one Arabic tile was counted more than once")
+		quit(1)
+		return
+	var visible_unplaced_tiles := 0
 	for tile in board.tiles:
 		if is_instance_valid(tile) and tile.visible:
+			visible_unplaced_tiles += 1
+	if visible_unplaced_tiles != board.tiles.size() - 1:
+		push_error("AUDIO TEST: placing one Arabic tile changed another tile")
+		quit(1)
+		return
+	print("AUDIO TEST Arabic tile placement is idempotent")
+
+	# Completing every slot must replace the loop with the one-shot word clip.
+	var final_tile = null
+	for tile in board.tiles:
+		if is_instance_valid(tile) and tile.visible:
+			final_tile = tile
 			board.place_piece(tile.target_index, tile)
+	# Simulate the release notification that follows the accepted final drop.
+	board.finish_piece_audio(final_tile.target_index)
+	await process_frame
 	await process_frame
 	if not service.player.playing or (service.player.stream is AudioStreamMP3 and service.player.stream.loop):
 		push_error("AUDIO TEST: completed word did not play once")
 		quit(1)
 		return
-	print("AUDIO TEST completed spelling plays the whole word once")
 	var completed_word_path := str(board.current_entry["word_audio"])
+	if played_paths.is_empty() or played_paths.back() != completed_word_path:
+		push_error("AUDIO TEST: completed Arabic word recording was not selected")
+		quit(1)
+		return
+	print("AUDIO TEST completed spelling plays the whole word once")
 	board.replay_button.pressed.emit()
 	await process_frame
 	if not service.player.playing or service.player.stream.loop or played_paths.is_empty() or played_paths.back() != completed_word_path:

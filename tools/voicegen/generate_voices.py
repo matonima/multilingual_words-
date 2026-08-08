@@ -59,9 +59,18 @@ RUSSIAN_LETTER_NAMES = [
 ]
 
 ARABIC_LETTER_NAMES = [
-    "ألف", "باء", "تاء", "ثاء", "جيم", "حاء", "خاء", "دال", "ذال",
-    "راء", "زاي", "سين", "شين", "صاد", "ضاد", "طاء", "ظاء", "عين",
-    "غين", "فاء", "قاف", "كاف", "لام", "ميم", "نون", "هاء", "واو", "ياء",
+    "أَلِف", "بَاء", "تَاء", "ثَاء", "جِيم", "حَاء", "خَاء", "دَال", "ذَال",
+    "رَاء", "زَاي", "سِين", "شِين", "صَاد", "ضَاد", "طَاء", "ظَاء", "عَيْن",
+    "غَيْن", "فَاء", "قَاف", "كَاف", "لَام", "مِيم", "نُون", "هَاء", "وَاو", "يَاء",
+]
+
+# Fully vowelled Modern Standard Arabic citation forms prevent the speech
+# engine from guessing short vowels that are normally omitted in writing.
+ARABIC_WORD_PROMPTS = [
+    "أَسَد", "بَيْت", "تُفَّاح", "ثَلْج", "جَمَل", "حَلِيب", "خُبْز",
+    "دُبّ", "ذَهَب", "رَجُل", "زَهْرَة", "سَمَك", "شَمْس", "صَابُون",
+    "ضِفْدَع", "طَائِرَة", "ظِلّ", "عَيْن", "غُرْفَة", "فِيل", "قَلَم",
+    "كِتَاب", "لَيْمُون", "مَاء", "نَار", "هِلال", "وَرْد", "يَد",
 ]
 
 LATIN_LETTER_SOUNDS = [
@@ -118,6 +127,8 @@ def letter_text(code: str, index: int, entry: dict) -> str:
 
 def word_text(code: str, index: int, entry: dict) -> tuple[str, str]:
     word = str(entry["word"])
+    if code == "ar":
+        return ARABIC_WORD_PROMPTS[index], VOICES["ar"]
     if code == "sa":
         # A native Indic voice reading Devanagari handles Sanskrit clusters
         # such as ग्न in अग्नि. The previous English "ag nee" prompt could

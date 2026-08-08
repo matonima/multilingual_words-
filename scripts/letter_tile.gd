@@ -58,13 +58,13 @@ func _on_gui_input(event: InputEvent) -> void:
 			board.start_piece_audio(pronunciation_path, spoken_text)
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 		if is_instance_valid(board):
-			board.stop_audio()
+			board.finish_piece_audio(target_index)
 	elif event is InputEventScreenTouch and event.pressed:
 		if is_instance_valid(board):
 			board.start_piece_audio(pronunciation_path, spoken_text)
 	elif event is InputEventScreenTouch and not event.pressed:
 		if is_instance_valid(board):
-			board.stop_audio()
+			board.finish_piece_audio(target_index)
 
 
 func _get_drag_data(_at_position: Vector2):
@@ -96,9 +96,11 @@ func _get_drag_data(_at_position: Vector2):
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_DRAG_END and is_instance_valid(self):
 		modulate.a = 1.0
+		if is_instance_valid(board) and board.is_piece_placed(target_index):
+			return
 		var successful := is_drag_successful()
 		var snapped := false
 		if not successful and is_instance_valid(board):
 			snapped = board.try_proximity_snap(target_index, get_viewport().get_mouse_position(), self)
 		if not successful and not snapped and is_instance_valid(board):
-			board.stop_audio()
+			board.finish_piece_audio(target_index)

@@ -6,6 +6,12 @@ for incompatible changes.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-08-08
+
+- Fixed Arabic word tiles being accepted twice after a successful RTL drag.
+- Fixed completed Arabic words being silenced by the final tile's drag cleanup.
+- Regenerated Arabic letter and word clips from fully vowelled native prompts.
+
 ## [1.1.0] - 2026-08-08
 
 - Corrected the Latin `aqua` guide and regenerated Sanskrit and Latin word

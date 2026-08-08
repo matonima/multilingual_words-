@@ -26,6 +26,7 @@ var slots: Array = []
 var tiles: Array = []
 var pieces: Array[String] = []
 var placed: Array[bool] = []
+var completion_announced := false
 
 
 func _ready() -> void:
@@ -38,6 +39,7 @@ func show_entry(entry: Dictionary, entry_id: int) -> void:
 	activity_id = entry_id + 1
 	language_code = str(entry["language"])
 	placed_count = 0
+	completion_announced = false
 	if not is_node_ready():
 		await ready
 	_clear_activity()
@@ -211,14 +213,19 @@ func _layout_tiles() -> void:
 func place_piece(index: int, tile) -> void:
 	if index < 0 or index >= slots.size() or not is_instance_valid(tile):
 		return
+	# RTL layouts can report drag failure after a drop was already accepted.
+	# Never count or fill the same piece twice.
+	if placed[index] or not tile.visible:
+		return
 	stop_audio()
-	slots[index].fill(Color(COLORS[index % COLORS.size()]))
-	tile.visible = false
 	placed[index] = true
 	placed_count += 1
+	slots[index].fill(Color(COLORS[index % COLORS.size()]))
+	tile.visible = false
 	var combined_syllable := _sanskrit_combination_around(index)
 	if placed_count == slots.size():
-		_complete()
+		# Start the word after release and drag-end cleanup have finished.
+		call_deferred("_complete_after_drop", activity_id)
 	elif not combined_syllable.is_empty():
 		audio_requested.emit(
 			ContentData.sanskrit_combination_audio(combined_syllable),
@@ -253,6 +260,8 @@ func _sanskrit_combination_around(index: int) -> String:
 func try_proximity_snap(index: int, release_position: Vector2, tile) -> bool:
 	if index < 0 or index >= slots.size() or not is_instance_valid(tile):
 		return false
+	if placed[index] or not tile.visible:
+		return false
 	var slot = slots[index]
 	var target_center: Vector2 = slot.global_position + slot.size * 0.5
 	var offset := release_position - target_center
@@ -270,7 +279,26 @@ func stop_audio() -> void:
 	audio_stop_requested.emit()
 
 
+func is_piece_placed(index: int) -> bool:
+	return index >= 0 and index < placed.size() and placed[index]
+
+
+func finish_piece_audio(index: int) -> void:
+	# A placed piece already stopped its loop and may now be playing the word.
+	if not is_piece_placed(index):
+		stop_audio()
+
+
+func _complete_after_drop(expected_activity_id: int) -> void:
+	if expected_activity_id != activity_id or placed_count != slots.size():
+		return
+	_complete()
+
+
 func _complete() -> void:
+	if completion_announced:
+		return
+	completion_announced = true
 	prompt_label.text = "Wonderful — you built the word!"
 	result_card.visible = true
 	audio_requested.emit(str(current_entry["word_audio"]), str(current_entry["word"]), language_code, str(current_entry["say"]), false)
